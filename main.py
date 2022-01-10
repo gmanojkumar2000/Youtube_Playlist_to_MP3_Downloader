@@ -1,16 +1,39 @@
-# This is a sample Python script.
+from pytube import Playlist
+import youtube_dl
+import sys
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+print("#####################################################")
+print("#        Youtube playlist to MP3  downloader         #")
+print("#####################################################")
 
+try:
+    url = input("Please enter the url of the playlist you wish to download: ")
+    #url = "https://www.youtube.com/playlist?list=PLpPVD1gS2eSFturasjuoJxAp0Hl2RxI4n"
+    pl = Playlist(url)
+    pl_length = pl.length
+    print('Number of videos in playlist: ' + str(pl.length))
+except Exception:
+    sys.exit("The playlist could not be downloaded!!!\nPlease check the playlist url ina browser!!!")
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+# Uncomment the below line to customize download directory
+# filepath = input("Please enter the filepath of the directory where this script is located:\n")
+filepath = "downloads"
+# get linked list of links in the playlist
+for video_url in pl.video_urls[:pl_length]:
+    try:
+        # print(url)
+        video_info = youtube_dl.YoutubeDL().extract_info(
+            url = video_url, download = False
+        )
+        filename = f"{video_info['title']}.mp3"
+        options = {
+            'format': 'bestaudio/best',
+            'keepvideo': False,
+            'outtmpl': filepath + '/' + filename,
+        }
 
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+        with youtube_dl.YoutubeDL(options) as ydl:
+            ydl.download([video_info['webpage_url']])
+            print("Download complete... {}".format(filename))
+    except Exception:
+        print("Couldn\'t download the audio!!! \n Moving onto the next file!!!")
