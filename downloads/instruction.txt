@@ -1,0 +1,12 @@
+
+Your downloads will be placed into this folder.
+
+To download the mp3 files to different path,
+
+1. Uncomment the below line
+
+# filepath = input("Please enter the filepath of the directory where this script is located:\n")
+
+2. comment this line
+
+filepath = "downloads"
